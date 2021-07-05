@@ -5,6 +5,7 @@ import time
 
 # sys.setrecursionlimit(10000)
 
+
 def main():
     x_win = 800
     y_win = 600
@@ -17,11 +18,14 @@ def main():
     GREEN = (0, 225, 0)
     get_start_finish(x_win, y_win, level, RED, GREEN)
 
+
 def get_start_finish(x_win, y_win, level, RED, GREEN):
     start_finish = []
     board = create_board(x_win, y_win)
     win = activate_init(x_win, y_win, RED, GREEN)
-
+    # Что за мифическое число 2? Почему не 3?
+    # Поидее подобные констатны нужно запихивать в переменные, что бы код был более читаем,
+    # это относится ко всем таким магическим числам в коде
     while len(start_finish) != 2:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -42,8 +46,10 @@ def get_start_finish(x_win, y_win, level, RED, GREEN):
     time.clock()
     print_way(start_finish,x_win, y_win, board, win, level)
 
+
 def create_board(x_win, y_win):
     return [[0 for j in range(x_win)] for i in range(y_win)]
+
 
 def activate_init(x_win, y_win, RED, GREEN):
     pygame.init()
@@ -57,10 +63,10 @@ def activate_init(x_win, y_win, RED, GREEN):
     text = font.render('Генератор лабиринта 2.2',True,GREEN)
     place = text.get_rect(center=(x_win//2, y_win//2))
     win.blit(text, place)
-    text = font.render('Введите точку старта и точку финиша (ЛКМ)',True,GREEN)
+    text = font.render('Введите точку старта и точку финиша (ЛКМ)', True, GREEN)
     place = text.get_rect(center=(x_win//2, (y_win//2)+25))
     win.blit(text, place)
-    text = font.render('Чтобы начать нажмите пробел',True,GREEN)
+    text = font.render('Чтобы начать нажмите пробел', True, GREEN)
     place = text.get_rect(center=(x_win//2, (y_win//2)+50))
     win.blit(text, place)
     pygame.display.update()
@@ -84,9 +90,11 @@ def print_field(board):
             print(col, end="  ")
         print()
 
+
 def mark_on_field(x, y, symbol, board):
     board[y][x] = symbol
     return board
+
 
 def go_left(x, y, long, board, win, way):
     if long < 0:
@@ -107,6 +115,7 @@ def go_left(x, y, long, board, win, way):
         way.append((x, y))
     return board, win, way
 
+
 def go_right(x, y, long, board, win, way):
     if long < 0:
         pygame.draw.line(win, (225, 255, 255), [x - 1, y], [x + long, y], 1)
@@ -126,6 +135,7 @@ def go_right(x, y, long, board, win, way):
         way.append((x, y))
     return board, win, way
 
+
 def go_up(x, y, long, board, win, way):
     if long < 0:
         pygame.draw.line(win, (225, 255, 255), [x, y + 1], [x, y - long], 1)
@@ -144,6 +154,7 @@ def go_up(x, y, long, board, win, way):
         board = mark_on_field(x, y, 1, board)
         way.append((x, y))
     return board, win, way
+
 
 def go_down(x, y, long, board, win, way):
     if long < 0:
@@ -165,7 +176,7 @@ def go_down(x, y, long, board, win, way):
     return board, win, way
 
 
-def print_way(start_finish,x_win, y_win, board, win, level):
+def print_way(start_finish, x_win, y_win, board, win, level):
     turns = []
     way = []
     x_s = start_finish[0][0]
@@ -180,46 +191,47 @@ def print_way(start_finish,x_win, y_win, board, win, level):
         i_y = y_f - y_s
 
         if a == 1:
-            go_down(x_s, y_s, (i_y)//2, board, win, way)
-            turns.append((x_s, y_s + (i_y)//2))
-            go_right(x_s, y_s + (i_y)//2, (i_x)//2, board, win, way)
-            turns.append((x_s + (i_x)//2, y_s + (i_y)//2))
-            go_down(x_s + (i_x)//2, y_s + (i_y)//2, i_y - (i_y)//2, board, win, way)
-            turns.append((x_s + (i_x)//2, y_f))
-            go_right(x_s + (i_x)//2, y_f , i_x - (i_x)//2 - 1, board, win, way)
+            go_down(x_s, y_s, i_y // 2, board, win, way)
+            turns.append((x_s, y_s + i_y // 2))
+            go_right(x_s, y_s + i_y // 2, i_x // 2, board, win, way)
+            turns.append((x_s + i_x // 2, y_s + i_y // 2))
+            go_down(x_s + i_x // 2, y_s + i_y // 2, i_y - i_y // 2, board, win, way)
+            turns.append((x_s + i_x // 2, y_f))
+            go_right(x_s + i_x // 2, y_f, i_x - i_x // 2 - 1, board, win, way)
 
         if a == 2:
-            go_right(x_s, y_s, (i_x)//2, board, win, way)
-            turns.append((x_s + (i_x)//2, y_s))
-            go_down(x_s + (i_x)//2, y_s, (i_y)//2, board, win, way)
-            turns.append((x_s + (i_x)//2, y_s + (i_y)//2))
-            go_right(x_s + (i_x)//2, y_s + (i_y)//2, i_x - (i_x)//2, board, win, way)
-            turns.append((x_f, y_s  + (i_y)//2))
-            go_down(x_f, y_s  + (i_y)//2, i_y - (i_y)//2 - 1, board, win, way)
+            go_right(x_s, y_s, i_x // 2, board, win, way)
+            turns.append((x_s + i_x // 2, y_s))
+            go_down(x_s + i_x // 2, y_s, i_y // 2, board, win, way)
+            turns.append((x_s + i_x // 2, y_s + i_y // 2))
+            go_right(x_s + i_x // 2, y_s + i_y // 2, i_x - i_x // 2, board, win, way)
+            turns.append((x_f, y_s + i_y // 2))
+            go_down(x_f, y_s + i_y // 2, i_y - i_y // 2 - 1, board, win, way)
 
     if y_s > y_f:
         i_x = x_f - x_s
         i_y = y_s - y_f
 
         if a == 1:
-            go_up(x_s, y_s, (i_y) // 2, board, win, way)
-            turns.append((x_s, y_s - (i_y) // 2))
-            go_right(x_s, y_s - (i_y) // 2, (i_x) // 2, board, win, way)
-            turns.append((x_s + (i_x) // 2, y_s - (i_y) // 2))
-            go_up(x_s + (i_x) // 2, y_s - (i_y) // 2, i_y - (i_y) // 2, board, win, way)
-            turns.append((x_s + (i_x) // 2, y_f))
-            go_right(x_s + (i_x) // 2, y_f, i_x - (i_x) // 2 - 1, board, win, way)
+            go_up(x_s, y_s, i_y // 2, board, win, way)
+            turns.append((x_s, y_s - i_y // 2))
+            go_right(x_s, y_s - i_y // 2, i_x // 2, board, win, way)
+            turns.append((x_s + i_x // 2, y_s - i_y // 2))
+            go_up(x_s + i_x // 2, y_s - i_y // 2, i_y - i_y // 2, board, win, way)
+            turns.append((x_s + i_x // 2, y_f))
+            go_right(x_s + i_x // 2, y_f, i_x - i_x // 2 - 1, board, win, way)
 
         if a == 2:
-            go_right(x_s, y_s, (i_x)//2, board, win, way)
-            turns.append((x_s + (i_x)//2, y_s))
-            go_up(x_s + (i_x)//2, y_s, (i_y)//2, board, win, way)
-            turns.append((x_s + (i_x)//2, y_s - (i_y)//2))
-            go_right(x_s + (i_x)//2, y_s - (i_y)//2, i_x - (i_x)//2, board, win, way)
-            turns.append((x_f, y_s  - (i_y)//2))
-            go_up(x_f, y_s  - (i_y)//2, i_y - (i_y)//2 - 1, board, win, way)
+            go_right(x_s, y_s, i_x // 2, board, win, way)
+            turns.append((x_s + i_x // 2, y_s))
+            go_up(x_s + i_x // 2, y_s, i_y // 2, board, win, way)
+            turns.append((x_s + i_x // 2, y_s - i_y // 2))
+            go_right(x_s + i_x // 2, y_s - i_y // 2, i_x - i_x // 2, board, win, way)
+            turns.append((x_f, y_s - i_y // 2))
+            go_up(x_f, y_s - i_y // 2, i_y - i_y // 2 - 1, board, win, way)
 
     get_random_points(turns, start_finish, board, win, way, level, x_win, y_win)
+
 
 def get_random_points(turns, start_finish, board, win, way, level, x_win, y_win):
     points_level = []
@@ -256,6 +268,7 @@ def get_random_points(turns, start_finish, board, win, way, level, x_win, y_win)
 
     get_in(start_finish, board, win, t_gen, x_win, y_win)
 
+
 def check_turns(point, location, board, x_win, y_win):
     x = point[0]
     y = point[1]
@@ -285,6 +298,7 @@ def check_turns(point, location, board, x_win, y_win):
             turns_list.append("RIGHT")
     return turns_list
 
+
 def get_random_turn(point, turns_list, start_finish, board, win, way, points_level, x_win, y_win):
     x = point[0]
     y = point[1]
@@ -295,6 +309,8 @@ def get_random_turn(point, turns_list, start_finish, board, win, way, points_lev
         points_level.append((x, y))
 
     if len(turns_list) > 0:
+        # Что за магические переменные типа a,b ? Лучше их то же называть более осознано, я понимаю, что они временные,
+        # но старайтесь их называть так, что бы потом через месяц посмотреть на код и вспомнить что они и зачем
         a = random.randint(0, len(turns_list) - 1)
         b = random.randint(0, 1)
         if turns_list[a] == "LEFT":
@@ -351,6 +367,7 @@ def get_random_turn(point, turns_list, start_finish, board, win, way, points_lev
 
     return points_level
 
+
 def waiting_close():
     print("Версия генератора лабиринта 2.2.1 (beta testing) ")
     while True:
@@ -358,15 +375,17 @@ def waiting_close():
             if event.type == pygame.QUIT:
                 exit()
             elif event.type == pygame.KEYDOWN:
-                    exit()
+                exit()
         pygame.time.delay(200)
 
 # _______________________________________________
+
 
 X = 2
 E = 6
 Q = 9
 T = 3
+
 
 def get_in(start_finish, board, win, t_gen, x_win, y_win):
     # global level
@@ -383,6 +402,7 @@ def get_in(start_finish, board, win, t_gen, x_win, y_win):
     pygame.display.update()
     get_ahead(x1, y1, x2, y2, screenshot, level, win, t_gen, x_win, y_win)
 
+
 def mark_on_field_2(x1, y1, symbol, win, level, screenshot):
     level[x1][y1] = symbol
 
@@ -395,13 +415,15 @@ def mark_on_field_2(x1, y1, symbol, win, level, screenshot):
         pygame.display.update()
     return level, win
 
+
 def get_ahead(x1, y1, x2, y2, screenshot, level, win, t_gen, x_win, y_win):
 
     pygame.display.update()
     finish = []
-    main = []
+    main = []   # старайтесь в рамках одного файла не использовать одинаковые наименования,
+                # в данном случае есть уже функция main,в рамках этой программы ничего не сломается, но на будущее стоит учесть
     temp = []
-    main.append((x1,y1))
+    main.append((x1, y1))
     while True:
         pygame.display.update()
 
@@ -432,6 +454,11 @@ def get_ahead(x1, y1, x2, y2, screenshot, level, win, t_gen, x_win, y_win):
             main.append((x2, y2))
             finish.append((x2, y2))
             find_an_exit(finish, main, win, screenshot, t_gen, x_win, y_win)
+        # какое-то нереально длинное условие, возможно оно и оправдано, но допустим,
+        # если через неделю на него посмотреть то будет уже сложно вспомнить,что именно оно проверяет, что можно сделать
+        # разбить эти условия на переменные и назвать их соотвествующе, например
+            # validate_value = all(y1 > 0, level[x1][y1 - 1] == 1, level[x1 + 1][y1] == 1) в итоге эта переменная станет
+            # True или False
 
         if y1 > 0 and level[x1][y1 - 1] == 1 and level[x1 + 1][y1] == 1 or y1 > 0 and level[x1][y1 - 1] == 1 and level[x1 + 1][y1] == 6 or y1 > 0 and level[x1][y1 - 1] == 6 and level[x1 + 1][y1] == 1:
             mark_on_field_2(x1, (y1 - 1), X, win, level, screenshot)
@@ -517,7 +544,6 @@ def get_ahead(x1, y1, x2, y2, screenshot, level, win, t_gen, x_win, y_win):
                     break
                 pygame.display.update()
 
-
         elif y1 > 0 and level[x1][y1 - 1] == 1 and level[x1 - 1][y1] == 1 or y1 > 0 and level[x1][y1 - 1] == 1 and level[x1 - 1][y1] == 6 or y1 > 0 and level[x1][y1 - 1] == 6 and level[x1 - 1][y1] == 1:
             mark_on_field_2(x1, (y1 - 1), X, win, level, screenshot)
             y1 -= 1
@@ -561,7 +587,6 @@ def get_ahead(x1, y1, x2, y2, screenshot, level, win, t_gen, x_win, y_win):
                     break
                 pygame.display.update()
 
-
         elif y1 > 0 and level[x1][y1 + 1] == 1 and level[x1 - 1][y1] == 1 or y1 > 0 and level[x1][y1 + 1] == 1 and level[x1 - 1][y1] == 6 or y1 > 0 and level[x1][y1 + 1] == 6 and level[x1 - 1][y1] == 1:
             mark_on_field_2(x1, (y1 + 1), X, win, level, screenshot)
             y1 += 1
@@ -580,7 +605,7 @@ def get_ahead(x1, y1, x2, y2, screenshot, level, win, t_gen, x_win, y_win):
                     temp.append((x1, y1))
 
                 elif x1 > 0 and level[x1 + 1][y1] == 1:
-                    mark_on_field_2((x1 + 1), y1, X)
+                    mark_on_field_2((x1 + 1), y1, X) # в эту функцию передали не все аргументы
                     x1 += 1
                     temp.append((x1, y1))
 
@@ -605,9 +630,8 @@ def get_ahead(x1, y1, x2, y2, screenshot, level, win, t_gen, x_win, y_win):
                     break
                 pygame.display.update()
 
-
         elif x1 > 0 and level[x1 + 1][y1] == 1 and level[x1 - 1][y1] == 1 or x1 > 0 and level[x1 + 1][y1] == 1 and level[x1 - 1][y1] == 6 or x1 > 0 and level[x1 + 1][y1] == 6 and level[x1 - 1][y1] == 1:
-            mark_on_field_2((x1 +1), y1, X, win, level, screenshot)
+            mark_on_field_2((x1 + 1), y1, X, win, level, screenshot)
             x1 += 1
             temp.append((x1, y1))
             get_ahead(x1, y1, x2, y2, screenshot, level, win, t_gen, x_win, y_win)
@@ -647,7 +671,6 @@ def get_ahead(x1, y1, x2, y2, screenshot, level, win, t_gen, x_win, y_win):
                     x1, y1 = main[-1]
                     break
                 pygame.display.update()
-
 
         elif y1 > 0 and level[x1][y1 + 1] == 1 and level[x1][y1 - 1] == 1 or y1 > 0 and level[x1][y1 + 1] == 1 and level[x1][y1 - 1] == 6 or y1 > 0 and level[x1][y1 + 1] == 6 and level[x1][y1 - 1] == 1:
             mark_on_field_2(x1, (y1 + 1), X, win, level, screenshot)
@@ -692,7 +715,6 @@ def get_ahead(x1, y1, x2, y2, screenshot, level, win, t_gen, x_win, y_win):
                     break
                 pygame.display.update()
 
-
         elif y1 > 0 and level[x1][y1 + 1] == 1:
             mark_on_field_2(x1, (y1 + 1), X, win, level, screenshot)
             y1 += 1
@@ -733,7 +755,7 @@ def find_an_exit(finish, main, win, screenshot, t_gen, x_win, y_win):
     win.blit(rob, rob_rect)
 
     font = pygame.font.SysFont('arial', 25)
-    text = font.render('Выход успешно найден',True,(0, 225, 0))
+    text = font.render('Выход успешно найден', True, (0, 225, 0))
     place = text.get_rect(center=(x_win//2, y_win//2 - 25))
     win.blit(text, place)
 
@@ -742,6 +764,7 @@ def find_an_exit(finish, main, win, screenshot, t_gen, x_win, y_win):
     pygame.time.delay(2000)
 
     back(main, win, screenshot)
+
 
 def back(main, win, screenshot):
 
@@ -765,5 +788,5 @@ def back(main, win, screenshot):
 if __name__ == '__main__':
 
     main()
-
-
+# в питоне функция это объект первого класса как и любая переменная, это означает, что её можно передавать как параметр
+# в другую функцию и называю переменные и функции одинаково можно выстрелить себе в ногу)
